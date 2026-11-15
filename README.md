@@ -51,6 +51,33 @@ python src/scraping/scraper_siman.py
 
 El catálogo queda en `data/raw/catalogo_siman.csv` y las imágenes en `data/raw/imagenes/`.
 
+## Reproducir las métricas
+
+Los datos no se suben al repositorio. Además del scraper, descarga el dataset de H&M de Kaggle en `data/raw/hm/`. Todos los comandos se corren desde la raíz:
+
+```bash
+python src/data/limpieza.py                   # catálogo limpio
+python src/data/muestreo.py                   # muestra de H&M (6 meses, 50,000 clientes)
+python src/data/mapeo.py                      # compras de H&M mapeadas a Siman
+python src/models/baseline.py                 # versión A
+python src/models/embeddings.py               # embeddings de texto
+python src/models/embeddings.py --imagen      # embeddings de imagen
+python src/models/two_tower.py                # versión B
+python src/models/two_tower.py --imagen       # versión C
+python src/models/two_tower.py --transfer     # transfer learning contra el modelo base (agregar --imagen para C)
+python src/evaluation/incertidumbre.py        # intervalos de confianza y 5 semillas
+python src/evaluation/modelo_valor.py         # valor por versión y sensibilidad
+python src/api/main.py --medir                # latencia
+```
+
+Los resultados quedan en `reports/resultados/` y las figuras en `reports/figuras/`. El informe completo está en `reports/Trabajo_Escrito.md`.
+
+Para levantar la API y la web en local:
+
+```bash
+python -m uvicorn src.api.main:app --port 8000
+```
+
 ## Despliegue
 
 Google Cloud Run (proyecto `recomendador-moda-uvg`, región `us-central1`). Cloud Build construye el

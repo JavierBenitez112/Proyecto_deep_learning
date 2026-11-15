@@ -569,7 +569,7 @@ El sistema es barato de operar (menos de Q350 al mes y respuestas en menos de 3 
 
 ## 4.9 Repositorio
 
-**Enlace:** pendiente de publicar en GitHub.
+**Enlace:** https://github.com/JavierBenitez112/Proyecto_deep_learning
 
 Contenido:
 
