@@ -1,0 +1,10 @@
+.venv
+.git
+__pycache__
+*.pyc
+notebooks
+reports
+docs
+data/raw
+data/processed/transacciones_hm.csv
+data/processed/mapeo_hm_siman.csv

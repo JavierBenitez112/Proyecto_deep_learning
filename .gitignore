@@ -1,0 +1,19 @@
+# Datos (pesados, no se suben)
+data/raw/
+data/processed/
+data/embeddings/
+
+# Modelos entrenados
+*.pt
+*.pth
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+.env
+
+# Sistema
+.DS_Store

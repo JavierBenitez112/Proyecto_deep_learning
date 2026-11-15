@@ -1,0 +1,7 @@
+variante,version,alpha,beta,val_recall@12,val_precision@12,val_map@12,test_recall@12,test_precision@12,test_map@12,delta_test_recall_vs_base
+B base sin entrenar (zero-shot) puro,B,0.000000,0,0.039686,0.007752,0.019694,0.042127,0.008003,0.020435,0.000000
+B base sin entrenar (zero-shot) + pop + recompra,B,0.100000,1,0.096560,0.020881,0.038317,0.104340,0.021432,0.042044,0.000000
+B two-tower sin preentrenados puro,B,0.000000,0,0.060826,0.012972,0.021072,0.062353,0.013157,0.021192,0.020226
+B two-tower sin preentrenados + pop + recompra,B,0.100000,1,0.097083,0.020986,0.037943,0.106076,0.021904,0.042478,0.001735
+B modelo completo puro,B,0.000000,0,0.059329,0.012937,0.020760,0.062922,0.013429,0.022139,0.020795
+B modelo completo + pop + recompra,B,0.100000,1,0.098794,0.021562,0.038450,0.105188,0.021922,0.041981,0.000848

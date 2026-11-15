@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recomendador de moda</title>
+<style>
+  :root { --bg:#f6f5f2; --fg:#1d1d1f; --mut:#6b6b70; --card:#fff; --line:#e4e2dc; --acc:#c8102e; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161617; --fg:#f2f2f3; --mut:#9a9aa0; --card:#222224; --line:#333336; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.4 system-ui,sans-serif; background:var(--bg); color:var(--fg); }
+  header, main { max-width:1400px; margin:0 auto; padding:16px; }
+  h1 { margin:0 0 4px; font-size:22px; } h2 { font-size:16px; margin:0 0 8px; }
+  .barra { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:12px; }
+  select, button, input[type=file] { font:inherit; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--fg); }
+  button { cursor:pointer; } button:hover { border-color:var(--acc); }
+  .hist { display:flex; gap:10px; overflow-x:auto; padding:4px 0; }
+  .hist div { flex:0 0 90px; font-size:11px; color:var(--mut); }
+  .hist img { width:90px; height:90px; object-fit:cover; border-radius:8px; display:block; }
+  .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:8px; }
+  @media (max-width:900px) { .cols { grid-template-columns:1fr; } }
+  .col { background:var(--bg); min-width:0; }
+  .col h2 small { color:var(--mut); font-weight:400; }
+  .lista { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+  .col .lista { grid-template-columns:repeat(2,1fr); }
+  .tarjeta { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; display:flex; flex-direction:column; cursor:pointer; }
+  .tarjeta:hover { border-color:var(--acc); }
+  .tarjeta img { width:100%; aspect-ratio:1; object-fit:cover; background:var(--line); }
+  .tarjeta .t { padding:8px; display:flex; flex-direction:column; gap:2px; flex:1; }
+  .nombre { font-size:13px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .marca { font-size:11px; color:var(--mut); } .precio { font-weight:600; }
+  .razon { font-size:11px; color:var(--acc); margin-top:auto; }
+  .tarjeta button { margin:0 8px 8px; padding:4px; font-size:12px; }
+  section.busca { margin-top:28px; }
+  .msg { color:var(--mut); font-size:13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Recomendador de moda Guatemala</h1>
+  <div class="msg">Demo al 22 de septiembre de 2020: compara los tres recomendadores para el mismo cliente.</div>
+  <div class="barra">
+    <label>Cliente: <select id="cliente"></select></label>
+  </div>
+</header>
+<main>
+  <h2>Últimas compras del cliente</h2>
+  <div id="historial" class="hist"></div>
+
+  <div class="cols">
+    <div class="col"><h2>A · Más vendidos <small id="ms-A"></small></h2><div class="lista" id="A"></div></div>
+    <div class="col"><h2>B · Two-tower <small id="ms-B"></small></h2><div class="lista" id="B"></div></div>
+    <div class="col"><h2>C · Multimodal <small id="ms-C"></small></h2><div class="lista" id="C"></div></div>
+  </div>
+
+  <section class="busca">
+    <h2>¿Buscas algo parecido?</h2>
+    <div class="barra">
+      <input type="file" id="foto" accept="image/*">
+      <span class="msg" id="ms-sim">Sube una foto o usa el botón "parecidos" de una tarjeta.</span>
+    </div>
+    <div class="lista" id="similares" style="margin-top:12px"></div>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const NUEVO = "__nuevo__";
+
+function tarjeta(it, conBoton) {
+  const d = document.createElement("div");
+  d.className = "tarjeta";
+  d.onclick = () => window.open(it.link, "_blank");
+  const img = document.createElement("img");
+  img.src = it.imagen_url; img.loading = "lazy"; img.alt = it.nombre;
+  const t = document.createElement("div");
+  t.className = "t";
+  for (const [c, txt] of [["nombre", it.nombre], ["marca", it.marca],
+                          ["precio", "Q " + Number(it.precio_q).toFixed(2)], ["razon", it.razon || ""]]) {
+    const e = document.createElement("div"); e.className = c; e.textContent = txt; t.appendChild(e);
+  }
+  d.append(img, t);
+  if (conBoton) {
+    const b = document.createElement("button");
+    b.textContent = "parecidos";
+    b.onclick = e => { e.stopPropagation(); similares({ item_id: it.item_id }); };
+    d.appendChild(b);
+  }
+  return d;
+}
+
+function pintar(id, items) {
+  const cont = $(id); cont.replaceChildren();
+  items.forEach(it => cont.appendChild(tarjeta(it, true)));
+}
+
+async function recomendar() {
+  const cid = $("cliente").value;
+  const hist = cid === NUEVO ? [] : await (await fetch("/historial/" + cid)).json();
+  const h = $("historial"); h.replaceChildren();
+  if (!hist.length) h.textContent = "Sin historial (cliente nuevo).";
+  hist.forEach(it => {
+    const d = document.createElement("div");
+    d.innerHTML = '<img alt=""><span></span>';
+    d.querySelector("img").src = it.imagen_url;
+    d.querySelector("span").textContent = it.fecha;
+    h.appendChild(d);
+  });
+  for (const v of ["A", "B", "C"]) {
+    const r = await (await fetch(`/recomendar/${cid === NUEVO ? "cliente-nuevo" : cid}?version=${v}&k=12`)).json();
+    pintar(v, r.items);
+    $("ms-" + v).textContent = `· ${r.ms} ms`;
+  }
+}
+
+async function similares(datos) {
+  const f = new FormData();
+  for (const [k, v] of Object.entries(datos)) f.append(k, v);
+  $("ms-sim").textContent = "Buscando...";
+  const res = await fetch("/similares", { method: "POST", body: f });
+  if (!res.ok) { $("ms-sim").textContent = "No se pudo procesar la imagen."; return; }
+  const r = await res.json();
+  $("ms-sim").textContent = `Prendas visualmente parecidas · ${r.ms} ms`;
+  const cont = $("similares"); cont.replaceChildren();
+  r.items.forEach(it => cont.appendChild(tarjeta(it, false)));
+  cont.scrollIntoView({ behavior: "smooth" });
+}
+
+$("foto").onchange = e => e.target.files[0] && similares({ foto: e.target.files[0] });
+$("cliente").onchange = recomendar;
+
+(async () => {
+  const cs = await (await fetch("/clientes")).json();
+  const sel = $("cliente");
+  cs.forEach((c, i) => sel.add(new Option(`Cliente ${i + 1} (${c.compras} compras) · ${c.cliente_id.slice(0, 8)}`, c.cliente_id)));
+  sel.add(new Option("Cliente nuevo (sin historial)", NUEVO));
+  recomendar();
+})();
+</script>
+</body>
+</html>

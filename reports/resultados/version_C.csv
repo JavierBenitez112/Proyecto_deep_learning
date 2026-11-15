@@ -1,0 +1,9 @@
+split,grupo,clientes,recall@12,precision@12,map@12
+val,todos,4773,0.099249,0.021789,0.038627
+test,todos,4592,0.103608,0.021759,0.043192
+test,seccion=bebe,9,0.070707,0.037037,0.068287
+test,seccion=hombre,112,0.110125,0.025298,0.043920
+test,seccion=mujer,3542,0.106609,0.022516,0.043937
+test,seccion=nina,7,0.107143,0.023810,0.076531
+test,seccion=nino,6,0.055556,0.013889,0.007937
+test,seccion=sin historial,916,0.091816,0.018286,0.039948

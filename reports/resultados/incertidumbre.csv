@@ -1,0 +1,13 @@
+tipo,nombre,estimado,ic_inf,ic_sup,frac_pos
+recall,A,0.074333,0.068524,0.080513,
+recall,Regla sin modelo,0.103451,0.096395,0.111051,
+recall,B,0.105188,0.097800,0.112728,
+recall,C,0.103608,0.096744,0.111010,
+dif_recall,B - Regla sin modelo,0.001737,-0.001691,0.005148,0.825000
+dif_recall,B - A,0.030855,0.024906,0.036911,1.000000
+dif_recall,Regla sin modelo - A,0.029118,0.023976,0.034555,1.000000
+dif_recall,C - B,-0.001580,-0.004941,0.002058,0.183000
+dif_recall,C - Regla sin modelo,0.000157,-0.003363,0.003778,0.544500
+dif_Q_mes,B - Regla sin modelo,2252.512359,-2477.196110,7054.059806,0.809500
+dif_Q_mes,B - A,42812.291492,33300.924327,53051.962730,1.000000
+dif_Q_mes,Regla sin modelo - A,40559.779133,32414.855999,49566.177740,1.000000
